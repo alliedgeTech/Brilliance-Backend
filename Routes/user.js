@@ -10,6 +10,7 @@ router.get("/users",User.getAllUsers)
 router.post("/forgot-password",User.forgetPass)
 router.post("/reset-password",User.resetpassword)
 
+
 // router.route("/check-email").get(EmailCheck)
 
 module.exports = router;

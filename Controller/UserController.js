@@ -277,6 +277,27 @@ const transporter = nodemailer.createTransport({
 //   res.send({code:500,message:"otp wrong "})
 // })
 // }; 
+
+const otpVerify = async(req, res) => {
+  const { otp } = req.body;
+
+  try {
+    // Find user by OTP
+    const user = await User.findOne({ otp });
+    if (!user) {
+      return res.status(404).json({ message: 'Invalid OTP' });
+    }
+
+    // Clear OTP from user document in the database
+    user.otp = undefined;
+    await user.save();
+
+    res.status(200).json({ message: 'OTP verified successfully' });
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).json({ message: 'Failed to verify OTP' });
+  }
+}
 const resetpassword = async (req, res) => {
   try {
     const { otp, newPassword } = req.body;
