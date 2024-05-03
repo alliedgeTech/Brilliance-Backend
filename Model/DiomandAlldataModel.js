@@ -37,9 +37,7 @@ const diamondSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    images: [{
-        type: String // Assuming you store image filenames
-    }]
+    images: [{ type: String }],
 });
 
 // Create Diamond model

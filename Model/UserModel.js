@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    otp:{
+        type:Number,
+        dafault:null
+    },
     resetPasswordOTP:{
         type: Number,
         default:null

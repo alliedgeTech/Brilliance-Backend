@@ -88,3 +88,13 @@ module.exports.SubmanuesMany = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+  module.exports.getSubmanuesMany = async (req, res) => {
+    try{
+        const subManu = await Submanues.find().populate('subMenuId');
+        res.json(subManu);
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+
+  };

@@ -1,17 +1,24 @@
 const DiomandShepa = require("../Model/DiomanDShepa")
 const DiamondSchema = require("../Model/DiomandAlldataModel")
-exports.createDiomandShape =async (req, res) => {
+
+
+
+exports.createDiomandShape = async (req, res) => {
     try {
         const { category, name } = req.body;
         const images = req.files.map(file => file.filename);
-        const product = new DiomandShepa({ category, name,images });
+        console.log(category)
+        console.log(name)
+        console.log(images)
+        const product = new DiomandShepa({ category, name, images });
         await product.save();
         res.status(201).json(product);
     } catch (error) {
         console.error('Error creating product:', error);
         res.status(500).json({ error: 'Failed to create product' });
     }
-  };
+};
+
   exports.getDiomandShape = async (req, res) => {
     try {
         const data = await DiomandShepa.find({});
@@ -50,9 +57,10 @@ exports.AddDiomandData =async (req, res) => {
             stockQuantity
         } = req.body;
 
-        // Extract uploaded image filenames from req.files
+       
         const images = req.files.map(file => file.filename);
-console.log(images)
+        console.log(images)
+
         // Create a new diamond instance
         const newDiamond = new DiamondSchema({
             shape,
@@ -76,17 +84,39 @@ console.log(images)
     }
   };
 
+
   exports.getAllDiamonds = async (req, res) => {
     try {
-        const diamonds = await DiamondSchema.find({});
-        res.status(200).json({ success: true, data: diamonds });
+       // Pagination
+       const page = req.query.page || 1;
+       const limit = 10; // Number of diamonds per page
+       const skip = (page - 1) * limit;
+ console.log(req.query.shape)
+ console.log(req.query.clarity)
+       // Build filter object based on request parameters
+       const filter = {};
+      
+       if (req.query.clarity) {
+          filter.clarity = req.query.clarity;
+       }
+       if (req.query.cut) {
+          filter.cut = req.query.cut;
+       }
+       if (req.query.shape) {
+        filter.shape = req.query.shape;
+     }
+       // Fetch diamonds based on filters
+       const diamonds = await DiamondSchema.find(filter)
+                                     .skip(skip)
+                                     .limit(limit);
+ 
+       res.status(200).json({ success: true, data: diamonds });
     } catch (error) {
-        console.error('Error fetching diamond data:', error);
-        res.status(500).json({ success: false, error: 'Error fetching diamond data' });
+       console.error("Error fetching diamonds:", error);
+       res.status(500).json({ success: false, error: "Internal Server Error" });
     }
-};
+ };
 
-// Get single diamond data by ID
 exports.getDiamondById = async (req, res) => {
     const { id } = req.params;
     try {
@@ -101,7 +131,6 @@ exports.getDiamondById = async (req, res) => {
     }
 };
 
-// Update diamond data by ID
 exports.updateDiamondById = async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
@@ -114,7 +143,7 @@ exports.updateDiamondById = async (req, res) => {
     }
 };
 
-// Delete diamond data by ID
+
 exports.deleteDiamondById = async (req, res) => {
     const { id } = req.params;
     try {

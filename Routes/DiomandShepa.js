@@ -5,24 +5,34 @@ const router = express.Router();
 const Category = require("../Controller/Diomand");
 const multer = require('multer');
 
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // Save files to the 'uploads' directory
+        cb(null, 'uploads/'); 
     },
     filename: function (req, file, cb) {
-        // Use current timestamp as filename to ensure uniqueness
+
         cb(null, Date.now() + '-' + file.originalname);
     }
 });
 
-// Set up multer instance
-const upload = multer({ storage: storage });
+const upload = multer({ 
+    storage: storage,
+    limits: { 
+        files: 5 
+    } 
+});
 
-router.post("/AdminDash/DiomandShepa",upload.array('images', 1),Category.createDiomandShape);
+// Routes
+router.post("/AdminDash/DiomandShepa", upload.array('images', 5), Category.createDiomandShape);
 router.get("/AdminDash/getDiomandShepa", Category.getDiomandShape);
-router.post("/AdminDash/AddDiomandData", upload.array('images', 5), Category.AddDiomandData);
+router.post("/AdminDash/AddDiomandData",  upload.array('images1', 5), Category.AddDiomandData);
 router.get("/AdminDash/getAllDiamonds", Category.getAllDiamonds);
 router.delete("/AdminDash/deletedDiomaend/:id", Category.deleteDiamondById);
 router.put("/AdminDash/UpadtedDiomaend/:id", Category.updateDiamondById);
 router.delete("/AdminDash/deletedDiomandCatogary/:id", Category.DeletedDiomandCatogary);
+router.get("/getAllDiamonds", Category.getAllDiamonds);
+router.get("/getDiamondById/:id", Category.getDiamondById);
+router.get("/getDiomandShepa", Category.getDiomandShape);
+
 module.exports = router;

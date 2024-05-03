@@ -9,7 +9,7 @@ router.post("/register",User.register)
 router.get("/users",User.getAllUsers)
 router.post("/forgot-password",User.forgetPass)
 router.post("/reset-password",User.resetpassword)
-
+router.post("/verifyOTP",User.verifyOTP)
 
 // router.route("/check-email").get(EmailCheck)
 
