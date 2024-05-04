@@ -34,11 +34,10 @@ exports.getRecentlyViewed = async (req, res) => {
      
     
   
-      // Get recently viewed diamonds for the client (based on IP address)
-      const recentlyViewed = await RecentlyViewed.find({  })
+             // Get recently viewed diamonds for the client (based on IP address)
+      const recentlyViewed = await RecentlyViewed.find({})
         .populate('diamond')
-        .sort({ viewedAt: -1 })
-        .limit(5); // Limiting to 5 recently viewed diamonds
+
   
       res.status(200).json({ success: true, data: recentlyViewed });
     } catch (error) {

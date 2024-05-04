@@ -41,6 +41,8 @@ const Slider = require('./Routes/Slider')
 const Diomand = require('./Routes/DiomandShepa')
 const Filtering = require('./Routes/Filtering')
 const RecentlyView = require('./Routes/recentlyViewed.routes')
+const WhishList = require("./Routes/whishlist")
+const Compare = require("./Routes/compare")
 app.use('/api/v1', AddProutect);
 app.use('/api/v1', AddCatogary);
 app.use('/api/v1', User);
@@ -49,6 +51,8 @@ app.use('/api/v1',Slider );
 app.use("/api/v1",Diomand)
 app.use("/api/v1",Filtering)
 app.use("/api/v1",RecentlyView)
+app.use("/api/v1",WhishList)
+app.use("/api/v1",Compare)
 // Start server
 app.listen(6001, () => {
   console.log('Server running on port 6001');
