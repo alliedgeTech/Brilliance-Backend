@@ -91,31 +91,48 @@ exports.AddDiomandData =async (req, res) => {
        const page = req.query.page || 1;
        const limit = 10; // Number of diamonds per page
        const skip = (page - 1) * limit;
- console.log(req.query.shape)
- console.log(req.query.clarity)
-       // Build filter object based on request parameters
+
+       // Filter object
        const filter = {};
-      
+
+       // Clarity filter
        if (req.query.clarity) {
           filter.clarity = req.query.clarity;
        }
+
+       // Cut filter
        if (req.query.cut) {
           filter.cut = req.query.cut;
        }
+
+       // Shape filter
        if (req.query.shape) {
-        filter.shape = req.query.shape;
-     }
-       // Fetch diamonds based on filters
+          filter.shape = req.query.shape;
+       }
+
+       // Price range filter
+       if (req.query.price) {
+          const priceRange = req.query.price.split('-').map(Number);
+          if (priceRange.length === 2 && !isNaN(priceRange[0]) && !isNaN(priceRange[1])) {
+             const [minPrice, maxPrice] = priceRange;
+             filter.price = { $gte: minPrice, $lte: maxPrice };
+          } else {
+             return res.status(400).json({ success: false, error: "Invalid price range format" });
+          }
+       }
+
        const diamonds = await DiamondSchema.find(filter)
-                                     .skip(skip)
-                                     .limit(limit);
+                                          .skip(skip)
+                                          .limit(limit);
  
        res.status(200).json({ success: true, data: diamonds });
     } catch (error) {
        console.error("Error fetching diamonds:", error);
        res.status(500).json({ success: false, error: "Internal Server Error" });
     }
- };
+};
+
+
 
 exports.getDiamondById = async (req, res) => {
     const { id } = req.params;

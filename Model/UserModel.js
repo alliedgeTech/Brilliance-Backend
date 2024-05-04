@@ -28,7 +28,8 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default:null
 
-    }
+    },
+    
 });
 
 // UserSchema.pre("save", async function(next) {

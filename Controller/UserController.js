@@ -78,71 +78,70 @@ const transporter1 = nodemailer.createTransport({
     pass: 'lxmh azbz zunm nnyt'
   }
 });
+
+
 const register = async (req, res) => {
-  console.log('Session data before setting OTP:', req.session);
-  let { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ error: "Please provide both email and password" });
-  }
-
-  // Generate OTP
-  const OTP = Math.floor(100000 + Math.random() * 900000);
-  req.session.OTP = OTP;
-  console.log('Session data after setting OTP:', req.session);
-
-  const mailOptions = {
-    from: 'harshxyz5@gmail.com',
-    to: req.body.email,
-    subject: 'OTP for Registration',
-    text: `Your OTP for registration is: ${OTP}`
-  };
+  const { email, password } = req.body;
 
   try {
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.json({ otpSent: false });
+    }
+
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const newUser = new User({ email, password: hashedPassword, otp });
+    await newUser.save();
+
+    // Send OTP to email
+    const mailOptions = {
+      from: 'harshxyz5@gmail.com',
+      to: email,
+      subject: 'OTP for Registration',
+      text: `Your OTP for registration is: ${otp}`
+    };
+
     await transporter1.sendMail(mailOptions);
     console.log('Email sent');
-
-    req.session.email = email;
-    req.session.password = password;
-
-    return res.status(200).json({ message: 'OTP sent successfully' });
+    return res.status(200).json({ otpSent: true });
   } catch (error) {
-    console.error('Error sending email:', error);
-    return res.status(500).json({ error: 'Failed to send OTP' });
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'An error occurred' });
   }
 };
+
+
 
 const verifyOTP = async (req, res) => {
-  const { otp } = req.body;
-  console.log('Session data in verifyOTP:', req.session);
-  console.log('Stored OTP:', req.session.OTP);
-  console.log('Provided OTP:', otp);
+  const { email, otp } = req.body;
 
-  if (otp && req.session.OTP && otp === req.session.OTP.toString()) {
-    const { email, password } = req.session;
-
-    try {
-      const hashedPassword = await bcrypt.hash(password, 12);
-
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(422).json({ error: "User already exists with that email" });
-      }
-
-      const newUser = new User({ email, password: hashedPassword });
-      await newUser.save();
-
-      delete req.session.OTP;
-
-      return res.status(200).json({ message: 'User registered successfully' });
-    } catch (error) {
-      console.error('Error registering user:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+  try {
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({ success: false, error: 'User not found' });
     }
-  } else {
-    return res.status(400).json({ error: 'Invalid OTP' });
+
+    // Verify OTP
+    if (user.otp === otp) {
+      // OTP verified, save user data
+      user.password = password;
+      await user.save();
+      return res.json({ success: true });
+    } else {
+      return res.json({ success: false, error: 'Invalid OTP' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'An error occurred' });
   }
-};
+}
 
 
 

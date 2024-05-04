@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const express = require("express");
 const cors = require('cors')
-const session = require('express-session')
-const MongoStore = require('connect-mongo');
+
 
 const bodyParser =require('body-parser');
 const app = express();
@@ -28,16 +27,7 @@ db.once('open', () => {
 });
 
 // Middleware
-app.use(session({
-  secret: '123456789',
-  resave: false,
-  saveUninitialized: true,
-  store: MongoStore.create({ mongoUrl: "mongodb+srv://harshgadhiya5949:pYuBSrbV5ikBcLZN@cluster0.so6lfn8.mongodb.net/RealTimeDiomand" }),
-  cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
-      secure: false // Set to true if using HTTPS
-  }
-}));
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
@@ -50,6 +40,7 @@ const manues = require('./Routes/manues')
 const Slider = require('./Routes/Slider')
 const Diomand = require('./Routes/DiomandShepa')
 const Filtering = require('./Routes/Filtering')
+const RecentlyView = require('./Routes/recentlyViewed.routes')
 app.use('/api/v1', AddProutect);
 app.use('/api/v1', AddCatogary);
 app.use('/api/v1', User);
@@ -57,6 +48,7 @@ app.use('/api/v1',manues );
 app.use('/api/v1',Slider );
 app.use("/api/v1",Diomand)
 app.use("/api/v1",Filtering)
+app.use("/api/v1",RecentlyView)
 // Start server
 app.listen(6001, () => {
   console.log('Server running on port 6001');
