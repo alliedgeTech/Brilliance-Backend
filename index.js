@@ -43,6 +43,8 @@ const Filtering = require('./Routes/Filtering')
 const RecentlyView = require('./Routes/recentlyViewed.routes')
 const WhishList = require("./Routes/whishlist")
 const Compare = require("./Routes/compare")
+const Cart = require("./Routes/Cart")
+const Ring = require("./Routes/AddRing")
 app.use('/api/v1', AddProutect);
 app.use('/api/v1', AddCatogary);
 app.use('/api/v1', User);
@@ -53,6 +55,8 @@ app.use("/api/v1",Filtering)
 app.use("/api/v1",RecentlyView)
 app.use("/api/v1",WhishList)
 app.use("/api/v1",Compare)
+app.use("/api/v1",Cart)
+app.use("/api/v1",Ring)
 // Start server
 app.listen(6001, () => {
   console.log('Server running on port 6001');

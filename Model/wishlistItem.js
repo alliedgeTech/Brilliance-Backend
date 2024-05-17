@@ -6,6 +6,11 @@ const wishlistItemSchema = new mongoose.Schema({
     ref: 'Diamond',
     required: true
   },
+  RingData: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ring',
+    required: true
+  },
 //   userId: {
 //     type: mongoose.Schema.Types.ObjectId,
 //     ref: 'User',
