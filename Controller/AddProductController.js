@@ -1,5 +1,6 @@
 const AddProDuctModel = require("../Model/AddProductModel")
 const sharp = require('sharp');
+
 module.exports.AddProduct = async (req, res) => {
   try {
     const {
