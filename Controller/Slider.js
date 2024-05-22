@@ -13,6 +13,7 @@ module.exports.AddSlider = upload.array('images'), async (req, res) => {
         
         const images = req.files;
 
+        
    
  
         const newSlider = new Slider({
