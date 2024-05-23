@@ -27,8 +27,6 @@ module.exports.AddProduct = async (req, res) => {
       size,
       price,
       sellPrice,
-      
-      
       cut,
       clarity,
       color,
