@@ -1,16 +1,34 @@
 const express = require("express");
 const router = express.Router();
+const verifyToken = require('../Middleware/verifyToken');
 
 const User = require("../Controller/UserController");
 
 
-router.post("/login",User.login)
-router.post("/register",User.register)
-router.get("/users",User.getAllUsers)
-router.post("/forgot-password",User.forgetPass)
-router.post("/reset-password",User.resetpassword)
-router.post("/verifyOTP",User.verifyOTP)
+// Define your routes and ensure all handlers are correctly referenced
 
-// router.route("/check-email").get(EmailCheck)
+// Route for user login
+router.post('/login', User.login);
+
+// Route for user registration
+router.post('/register', User.register);
+
+// Route for dashboard access (protected route)
+router.get('/dashboard', verifyToken, User.dashboard);
+
+// Route to get all users
+router.get('/users', User.getAllUsers);
+
+// Route to handle forgotten passwords
+router.post('/forgot-password', User.forgetPass);
+
+// Route to reset password
+router.post('/reset-password', User.resetPassword);
+
+// Route to verify OTP
+router.post('/verify-otp', User.verifyOTP);
+
+// Route to delete user
+router.delete('/users/:userId', User.deleteUser);
 
 module.exports = router;
